@@ -1,0 +1,36 @@
+---
+# base.yml: tasks every server should run
+- name: Update APT package cache
+  apt: update_cache=yes
+
+- name: Install basic packages
+  action: apt pkg={{item}} state=installed
+  with_items:
+  - sudo
+  - vim
+  - tmux
+  - htop
+  - locales
+  - rsync
+  - tar
+  - tzdata
+  - openssh-client
+  - git
+  - build-essential
+
+- name: setup locales
+  shell: echo en_US.UTF-8 UTF-8 > /etc/locale.gen && echo en_US ISO-8859-1 >> /etc/locale.gen && /usr/sbin/locale-gen
+
+- name: setup localtime to UTC
+  copy: src=/usr/share/zoneinfo/UTC dest=/etc/localtime owner=root
+
+- name: Install remote server packages
+  action: apt pkg={{item}} state=installed
+  with_items: [openssh-server, ntp, ntpdate]
+
+- name: start ssh server every bootup
+  service: name=ssh state=started enabled=yes
+
+- name: start ntp server every bootup
+  service: name=ntp state=started enabled=yes
+

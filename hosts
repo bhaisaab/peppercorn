@@ -1,0 +1,6 @@
+[zbox]
+orangebox
+bluebox
+
+[baagi]
+baagi.org:1009 ansible_ssh_user=bhaisaab

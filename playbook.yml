@@ -1,0 +1,10 @@
+---
+- hosts: baagi.org
+  gather_facts: False
+  sudo: True
+  sudo_user: root
+  roles:
+    - common
+  #tasks:
+  #  - include: base.yml
+
