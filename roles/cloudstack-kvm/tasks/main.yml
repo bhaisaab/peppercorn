@@ -1,0 +1,16 @@
+---
+- name: Update APT package cache
+  apt: update_cache=yes
+
+- name: Install basic packages
+  action: apt pkg={{item}} state=installed
+  with_items:
+  - bridge-utils
+  - openntpd
+  - mysql-client
+  - qemu-kvm
+  - pm-utils
+
+- name: fix libvirt and restart
+  shell: sed -i -e 's/libvirtd_opts="-d"/libvirtd_opts="-d -l"/' /etc/init/libvirt-bin.conf && service libvirt-bin restart
+
