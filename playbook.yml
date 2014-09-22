@@ -1,10 +1,15 @@
 ---
-- hosts: baagi.org
+- hosts: orangebox
   gather_facts: False
   sudo: True
   sudo_user: root
+  user: bhaisaab
   roles:
     - common
-  #tasks:
+    - cloudstack-nfs
+    - cloudstack-kvm
+  tasks:
+    - name: Check if server is alive
+      action: ping
   #  - include: base.yml
 
