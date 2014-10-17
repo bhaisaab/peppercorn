@@ -8,6 +8,9 @@
   - nfs-kernel-server
   - quota
 
+- name: create export directory
+  shell: mkdir -p /export/primary && mkdir -p /export/secondary
+
 - name: setup nfs exports
   shell: echo "/export  *(rw,async,no_root_squash,no_subtree_check)" > /etc/exports
 
