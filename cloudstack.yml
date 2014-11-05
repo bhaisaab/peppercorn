@@ -1,8 +1,6 @@
 ---
 - hosts: acsbox
   gather_facts: False
-  sudo: True
-  sudo_user: root
   user: bhaisaab
   roles:
     - common

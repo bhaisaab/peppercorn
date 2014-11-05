@@ -1,0 +1,46 @@
+---
+- name: Start SSH
+  service: name=ssh state=started enabled=yes
+  sudo: yes
+
+- name: Reload SSH
+  service: name=ssh state=reloaded
+  sudo: yes
+
+- name: Restart SSH
+  service: name=ssh state=restarted enabled=yes
+  sudo: yes
+
+- name: Start NTP
+  service: name=ntp state=started enabled=yes
+  sudo: yes
+
+- name: Setup locale
+  shell: echo en_US.UTF-8 UTF-8 > /etc/locale.gen && echo en_US ISO-8859-1 >> /etc/locale.gen && /usr/sbin/locale-gen
+  sudo: yes
+  run_once: true
+
+- name: Setup localtime
+  copy: src=/usr/share/zoneinfo/{{ timezone }} dest=/etc/localtime owner=root
+  sudo: yes
+  run_once: true
+
+- name: Setup ssh publickey
+  shell: mkdir -p /home/{{ default_username }}/.ssh && wget {{ default_user_ssh_pub_url }} -O  /home/{{ default_username }}/.ssh/authorized_keys && chown {{ default_username }}:{{ default_username }} -R /home/{{ default_username }}/.ssh
+  args:
+    creates: /home/{{ default_username }}/.ssh/authorized_keys
+
+- name: Setup ohmyzsh
+  git: repo=git://github.com/robbyrussell/oh-my-zsh.git
+       dest=/home/{{ default_username }}/.oh-my-zsh update=no accept_hostkey=true
+
+- name: Setup dotfiles
+  git: repo=https://github.com/bhaisaab/dotfiles.git
+       dest=/home/{{ default_username }}/.dotfiles update=yes accept_hostkey=true
+
+- name: Install dotfiles
+  command: bash /home/{{ default_username }}/.dotfiles/install.sh
+  args:
+    creates: /home/{{ default_username }}/.zshrc
+  run_once: true
+

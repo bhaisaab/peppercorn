@@ -1,9 +1,35 @@
+[local]
+127.0.0.1  ansible_connection=local
+
+[rpi]
+pi         ansible_ssh_user=pi ansible_ssh_host=192.168.1.5 ansible_ssh_port=1009
+
+[desktop]
+blackbox   ansible_ssh_user=bhaisaab ansible_ssh_host=192.168.1.10
+orangebox  ansible_ssh_user=bhaisaab ansible_ssh_host=192.168.1.12
+
 [zbox]
-orangebox ansible_ssh_user=bhaisaab
-bluebox ansible_ssh_user=bhaisaab
+bluebox    ansible_ssh_user=bhaisaab ansible_ssh_host=192.168.1.37 ansible_ssh_port=1009
 
-[acsbox]
-blackbox:1009 ansible_ssh_user=bhaisaab
+[acsbox:children]
+zbox
 
-[baagi]
-baagi.org:1009 ansible_ssh_user=bhaisaab
+[acsbox:vars]
+network_gateway=192.168.1.1
+network_mask=255.255.0.0
+
+[h573:children]
+rpi
+acsbox
+
+[h573:vars]
+ssh_port=1009
+
+[routers]
+192.168.1.2
+192.168.1.3
+192.168.1.4
+
+[sn]
+scaleninja:1009 ansible_ssh_user=bhaisaab
+

@@ -1,36 +1,53 @@
 ---
-# base.yml: tasks every server should run
-- name: Update APT package cache
-  apt: update_cache=yes
+- name: Update apt cache
+  apt: update_cache=yes cache_valid_time=3600
+  sudo: yes
 
 - name: Install basic packages
-  action: apt pkg={{item}} state=installed
+  action: apt pkg={{item}} state=latest install_recommends=no
   with_items:
-  - sudo
-  - vim
-  - tmux
-  - htop
-  - locales
-  - rsync
-  - tar
-  - tzdata
-  - openssh-client
-  - git
-  - build-essential
+    - sudo
+    - vim
+    - tmux
+    - htop
+    - locales
+    - rsync
+    - tar
+    - tzdata
+    - openssh-client
+    - ntp
+    - ntpdate
+    - build-essential
+    - git
+    - wget
+    - curl
+    - zsh
+  sudo: yes
+  notify:
+    - Setup locale
+    - Start NTP
 
-- name: setup locales
-  shell: echo en_US.UTF-8 UTF-8 > /etc/locale.gen && echo en_US ISO-8859-1 >> /etc/locale.gen && /usr/sbin/locale-gen
+- name: Install SSH server
+  apt: pkg=openssh-server state=latest
+  register: sshinstalled
+  sudo: yes
+  notify:
+    - Start SSH
 
-- name: setup localtime to UTC
-  copy: src=/usr/share/zoneinfo/UTC dest=/etc/localtime owner=root
+- name: Setup SSHD config
+  when: sshinstalled|success
+  template: src=sshd_config.j2 dest=/etc/ssh/sshd_config owner=root group=root mode=644
+  sudo: yes
+  notify:
+    - Restart SSH
 
-- name: Install remote server packages
-  action: apt pkg={{item}} state=installed
-  with_items: [openssh-server, ntp, ntpdate]
-
-- name: start ssh server every bootup
-  service: name=ssh state=started enabled=yes
-
-- name: start ntp server every bootup
-  service: name=ntp state=started enabled=yes
+- name: Create user
+  action: user name="{{ default_username }}" password="{{ default_userpass }}" home="/home/{{ default_username }}" shell="/bin/{{ default_shell }}" state=present groups=adm,sudo,bhaisaab append=yes
+  sudo: yes
+  run_once: true
+  notify:
+    #- Setup ssh publickey
+    - Setup ohmyzsh
+    #- Setup dotfiles
+    #- Install dotfiles
 

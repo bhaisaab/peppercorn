@@ -1,0 +1,8 @@
+---
+timezone: UTC
+ssh_port: 1009
+default_username: bhaisaab
+default_userpass: $6$JR3l0qPS$kPW8jZBG1VOeQh9shwQhF2Cj0781rQhIYJ7VKwgk8bIMGXyb9IrSWbKxXPUx2cV0JR47h588/fgBGv7ILMF.21
+default_shell: zsh
+default_user_ssh_pub_url: http://bhaisaab.org/ssh.pub
+default_user_gpg_pub_url: http://bhaisaab.org/gpg.pub
