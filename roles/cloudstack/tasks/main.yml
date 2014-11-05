@@ -11,7 +11,7 @@
   action: apt pkg={{item}} state=latest
   sudo: yes
   with_items:
-    #- cloudstack-management
-    #- cloudstack-usage
-    #- cloudstack-agent
+    - cloudstack-management
+    - cloudstack-usage
+    - cloudstack-agent
     - cloudstack-common

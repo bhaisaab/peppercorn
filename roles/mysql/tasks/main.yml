@@ -11,5 +11,13 @@
 
 - name: Install basic packages
   apt: pkg=mysql-server state=latest
+  register: mysqlserverinstalled
   sudo: yes
+
+- name: Setup MySQL config
+  when: mysqlserverinstalled|success
+  template: src=my.cnf.j2 dest=/etc/mysql/my.cnf owner=root group=root mode=644
+  sudo: yes
+  notify:
+    - Restart MySQL server
 

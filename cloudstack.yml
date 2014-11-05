@@ -11,5 +11,5 @@
     - common
     - kvm
     - nfs
-    - mysql
+    # - mysql ## cloudstack module has a dependency on mysql
     - cloudstack
