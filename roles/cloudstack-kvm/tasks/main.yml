@@ -1,16 +1,34 @@
 ---
 - name: Update APT package cache
-  apt: update_cache=yes
+  apt: update_cache=yes cache_valid_time=3600
+  sudo: yes
 
 - name: Install basic packages
-  action: apt pkg={{item}} state=installed
+  action: apt pkg={{item}} state=latest
+  register: kvminstalled
+  sudo: yes
   with_items:
-  - bridge-utils
-  - openntpd
-  - mysql-client
-  - qemu-kvm
-  - pm-utils
+    - bridge-utils
+    - mysql-client
+    - qemu-kvm
+    - libvirt-bin
+    - pm-utils
 
-- name: fix libvirt and restart
-  shell: sed -i -e 's/libvirtd_opts="-d"/libvirtd_opts="-d -l"/' /etc/init/libvirt-bin.conf && service libvirt-bin restart
+- name: Setup Bridge interfaces
+  when: kvminstalled|success
+  template: src=interfaces.j2 dest=/etc/network/interfaces owner=root group=root mode=644
+  sudo: yes
 
+- name: Setup libvirtd config
+  copy: src=libvirtd.conf dest=/etc/libvirt/libvirtd.conf owner=root group=root mode=644
+  sudo: yes
+
+- name: Setup qemu config
+  copy: src=qemu.conf dest=/etc/libvirt/qemu.conf owner=root group=root mode=644
+  sudo: yes
+
+- name: Fix libvirtd opts
+  shell: sed -i -e 's/libvirtd_opts="-d"/libvirtd_opts="-d -l"/' /etc/init/libvirt-bin.conf
+  sudo: yes
+  notify:
+    - Restart libvirt-bin

@@ -1,0 +1,5 @@
+---
+- name: Restart libvirt-bin
+  service: name=libvirt-bin state=restarted
+  sudo: yes
+

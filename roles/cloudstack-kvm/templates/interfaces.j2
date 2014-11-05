@@ -1,0 +1,25 @@
+auto lo
+iface lo inet loopback
+
+auto eth0
+iface eth0 inet manual
+
+# Public network
+auto cloudbr0
+iface cloudbr0 inet static
+    address {{ ansible_ssh_host }}
+    netmask {{ ansible_default_ipv4["netmask"] }}
+    gateway {{ ansible_default_ipv4["gateway"] }}
+    dns-nameservers {{ ansible_default_ipv4["gateway"] }} 8.8.8.8
+    bridge_ports eth0
+    bridge_fd 5
+    bridge_stp off
+    bridge_maxwait 1
+
+# Private network
+auto cloudbr1
+iface cloudbr1 inet manual
+    bridge_ports none
+    bridge_fd 5
+    bridge_stp off
+    bridge_maxwait 1
