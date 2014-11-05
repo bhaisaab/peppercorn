@@ -25,11 +25,6 @@
   sudo: yes
   run_once: true
 
-- name: Setup ssh publickey
-  shell: mkdir -p /home/{{ default_username }}/.ssh && wget {{ default_user_ssh_pub_url }} -O  /home/{{ default_username }}/.ssh/authorized_keys && chown {{ default_username }}:{{ default_username }} -R /home/{{ default_username }}/.ssh
-  args:
-    creates: /home/{{ default_username }}/.ssh/authorized_keys
-
 - name: Setup ohmyzsh
   git: repo=git://github.com/robbyrussell/oh-my-zsh.git
        dest=/home/{{ default_username }}/.oh-my-zsh update=no accept_hostkey=true

@@ -46,8 +46,13 @@
   sudo: yes
   run_once: true
   notify:
-    #- Setup ssh publickey
     - Setup ohmyzsh
-    #- Setup dotfiles
-    #- Install dotfiles
+    - Setup dotfiles
+    - Install dotfiles
+
+- name: Add admin key
+  authorized_key:
+    user="{{ default_username }}"
+    key="{{ default_user_ssh_publickey }}"
+    state=present
 

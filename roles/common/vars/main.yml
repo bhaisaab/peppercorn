@@ -1,8 +1,7 @@
 ---
 timezone: UTC
 ssh_port: 1009
+default_shell: zsh
 default_username: bhaisaab
 default_userpass: $6$JR3l0qPS$kPW8jZBG1VOeQh9shwQhF2Cj0781rQhIYJ7VKwgk8bIMGXyb9IrSWbKxXPUx2cV0JR47h588/fgBGv7ILMF.21
-default_shell: zsh
-default_user_ssh_pub_url: http://bhaisaab.org/ssh.pub
-default_user_gpg_pub_url: http://bhaisaab.org/gpg.pub
+default_user_ssh_publickey: ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEA2RIE3hgSAD8zULuyE7KDW9EKh2oVbNGY7iSL/VI5xHLISKh4e8ksTshWjlGBtrUCnuzR7y2BUxZ65RI8XkB1fEDxcOU4/0lVPvJYDSsGveXoOgpLwOtKRoGLgjFUGzBQlj2s6YaYQxoNTqtBVkDIH6ekPNq0Q38hRrFcsVIk1sFo5ejuvFxt2wx6APcFIQtHSNezEDO0GVUScDU1N1YEMMv1PU3M/SrcezkXrGl/efF3kWtY9L5xm7sojHMCCqsI38r8ogof67F7JdWRXM6Nl3VzkdCBzWGcyAl+cYfjzgOiBGXyAyYBk8qqzJjKwUOtdjfRvCyowA/0xBwMW1T7PQ==
