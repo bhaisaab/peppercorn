@@ -1,0 +1,37 @@
+---
+- name: Install basic packages
+  action: apt pkg={{item}} state=latest
+  sudo: yes
+  with_items:
+    - nfs-kernel-server
+    - quota
+
+- name: Ensure /export/primary exists
+  file: dest=/export/primary owner=root group=root state=directory
+  sudo: yes
+
+- name: Ensure /export/secondary exists
+  file: dest=/export/secondary owner=root group=root state=directory
+  sudo: yes
+
+- name: Setup nfs exports
+  copy: src=exports dest=/etc/exports owner=root group=root mode=644
+  sudo: yes
+
+- name: Fix nfs-kernel-server default config
+  copy: src=nfs-kernel-server dest=/etc/default/nfs-kernel-server owner=root group=root mode=644
+  sudo: yes
+
+- name: Fix nfs-common default config
+  copy: src=nfs-common dest=/etc/default/nfs-common owner=root group=root mode=644
+  sudo: yes
+
+- name: Fix quota default config
+  copy: src=quota dest=/etc/default/quota owner=root group=root mode=644
+  sudo: yes
+
+- name: Add lockd config
+  shell: echo options lockd nlm_udpport=32769 nlm_tcpport=32803 > /etc/modprobe.d/lockd.conf
+  run_once: true
+  sudo: yes
+

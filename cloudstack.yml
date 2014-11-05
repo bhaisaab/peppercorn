@@ -2,12 +2,14 @@
 - hosts: acsbox
   gather_facts: True
   user: bhaisaab
+  tasks:
+    - name: Update apt cache
+      apt: update_cache=yes cache_valid_time=3600
+      sudo: yes
+
   roles:
     - common
-    - cloudstack-kvm
-    #- cloudstack-nfs
-  tasks:
-    - name: Check if server is alive
-      action: ping
-  #  - include: base.yml
-
+    - kvm
+    - nfs
+    - mysql
+    - cloudstack

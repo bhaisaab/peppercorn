@@ -1,0 +1,15 @@
+---
+- name: Mysql | Set root password
+  shell: echo mysql-server mysql-server/root_password password {{ mysql_root_password }} | sudo debconf-set-selections
+  sudo: yes
+  run_once: true
+
+- name: Mysql | Set root repassword
+  shell: echo mysql-server mysql-server/root_password_again password {{ mysql_root_password }} | sudo debconf-set-selections
+  sudo: yes
+  run_once: true
+
+- name: Install basic packages
+  apt: pkg=mysql-server state=latest
+  sudo: yes
+

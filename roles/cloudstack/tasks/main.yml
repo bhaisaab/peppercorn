@@ -1,0 +1,17 @@
+---
+- name: Setup ShapeBlue CloudStack repo
+  apt_repository: repo='deb http://packages.shapeblue.com/cloudstack/upstream/debian/4.3 ./' state=present
+  sudo: yes
+
+- name: Import ShapeBlue CloudStack Repo GPG key
+  apt_key: id=584DF93F url=http://packages.shapeblue.com/release.asc state=present
+  sudo: yes
+
+- name: Install basic packages
+  action: apt pkg={{item}} state=latest
+  sudo: yes
+  with_items:
+    #- cloudstack-management
+    #- cloudstack-usage
+    #- cloudstack-agent
+    - cloudstack-common
