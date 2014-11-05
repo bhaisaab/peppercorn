@@ -50,6 +50,9 @@
     - Setup dotfiles
     - Install dotfiles
 
+- name: Insure ssh dir exists
+  file: dest=/home/{{ default_username }}/.ssh owner={{ default_username }} group={{ default_username }} state=directory
+
 - name: Add admin key
   authorized_key:
     user="{{ default_username }}"

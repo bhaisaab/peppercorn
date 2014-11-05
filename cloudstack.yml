@@ -1,11 +1,11 @@
 ---
 - hosts: acsbox
-  gather_facts: False
+  gather_facts: True
   user: bhaisaab
   roles:
     - common
-    - cloudstack-nfs
     - cloudstack-kvm
+    #- cloudstack-nfs
   tasks:
     - name: Check if server is alive
       action: ping
