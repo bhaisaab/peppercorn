@@ -1,17 +1,96 @@
 ---
-- name: Setup ShapeBlue CloudStack repo
-  apt_repository: repo='deb http://packages.shapeblue.com/cloudstack/upstream/debian/4.3 ./' state=present
-  sudo: yes
-
 - name: Import ShapeBlue CloudStack Repo GPG key
   apt_key: id=584DF93F url=http://packages.shapeblue.com/release.asc state=present
   sudo: yes
 
+- name: Setup ShapeBlue CloudStack repo
+  apt_repository: repo='deb http://packages.shapeblue.com/cloudstack/upstream/debian/4.3 ./' state=present update_cache=true
+  sudo: yes
+
 - name: Install basic packages
   action: apt pkg={{item}} state=latest
+  register: cloudstackinstalled
   sudo: yes
   with_items:
     - cloudstack-management
     - cloudstack-usage
     - cloudstack-agent
     - cloudstack-common
+
+- name: Setup CloudStack database
+  shell: cloudstack-setup-databases cloud:cloudpassword@localhost --deploy-as=root:root -i {{ ansible_ssh_host }}
+  sudo: yes
+  when: cloudstackinstalled|success
+  run_once: true
+  args:
+    creates: /var/lib/mysql/cloud
+
+- name: Setup CloudStack management server
+  shell: cloudstack-setup-management
+  sudo: yes
+  run_once: true
+  args:
+    creates: /var/log/cloudstack/management/setupManagement.log
+
+- name: Setup KVM template
+  shell: cd /opt && wget http://packages.shapeblue.com/systemvmtemplate/4.3/4.3.1/systemvm64template-2014-11-04-4.3.1-kvm.qcow2.bz2 && /usr/share/cloudstack-common/scripts/storage/secondary/cloud-install-sys-tmplt -m /export/secondary -f /opt/systemvm64template-2014-11-04-4.3.1-kvm.qcow2.bz2 -h kvm -o localhost -r cloud -d cloudpassword
+  sudo: yes
+  when: cloudstackinstalled|success
+  run_once: true
+  args:
+    creates: /opt/systemvm64template-2014-11-04-4.3.1-kvm.qcow2.bz2
+
+- name: Stop tomcat6
+  service: name=tomcat6 state=stopped enabled=no
+  sudo: yes
+
+- name: Start CloudStack management server
+  service: name=cloudstack-management state=started enabled=yes
+  sudo: yes
+
+- name: Start CloudStack usage server
+  service: name=cloudstack-usage state=started enabled=yes
+  sudo: yes
+
+- name: Start CloudStack management server
+  service: name=cloudstack-agent state=started enabled=yes
+  sudo: yes
+
+- name: Disable apparmour for libvirtd
+  file: src=/etc/apparmor.d/usr.sbin.libvirtd dest=/etc/apparmor.d/disable/usr.sbin.libvirtd owner=root group=root state=link
+  sudo: yes
+
+- name: Disable apparmour for libvirtd aa-helper
+  file: src=/etc/apparmor.d/usr.lib.libvirt.virt-aa-helper dest=/etc/apparmor.d/disable/usr.lib.libvirt.virt-aa-helper owner=root group=root state=link
+  sudo: yes
+
+- name: Apparmour parser on libvirtd
+  shell: (apparmor_parser -R /etc/apparmor.d/usr.sbin.libvirtd || true) && (apparmor_parser -R /etc/apparmor.d/usr.lib.libvirt.virt-aa-helper || true)
+  sudo: yes
+
+- name: Fix iptables for udp traffic
+  shell: iptables -A INPUT -s {{ ansible_default_ipv4["network"] }}/16 -m state --state NEW -p udp --dport {{ item }} -j ACCEPT
+  sudo: yes
+  with_items: [111, 32769, 892, 875, 662]
+
+- name: Fix iptables for tcp traffic
+  shell: iptables -A INPUT -s {{ ansible_default_ipv4["network"] }}/16 -m state --state NEW -p tcp --dport {{ item }} -j ACCEPT
+  sudo: yes
+  with_items: [111, 2049, 32803, 892, 875, 662]
+
+- name: Install iptables-persistent
+  apt: pkg=iptables-persistent state=installed
+  sudo: yes
+
+- name: Have UFW allow ports for KVM
+  ufw: rule=allow proto=tcp from_ip=any to_ip=any port={{ item }}
+  sudo: yes
+  with_items:
+    - 22
+    - 1009
+    - 1798
+    - 16509
+    - 5900:6100
+    - 49152:49216
+
+

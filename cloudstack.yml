@@ -8,7 +8,7 @@
       sudo: yes
 
   roles:
-    - common
+    - { role: common, kvm_host: true}
     - kvm
     - nfs
     # - mysql ## cloudstack module has a dependency on mysql

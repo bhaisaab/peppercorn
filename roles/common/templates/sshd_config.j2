@@ -1,4 +1,7 @@
 Port {{ ssh_port }}
+{% if kvm_host is defined %}
+Port 22
+{% endif %}
 #ListenAddress ::
 #ListenAddress 0.0.0.0
 Protocol 2

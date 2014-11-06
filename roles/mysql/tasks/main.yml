@@ -3,11 +3,15 @@
   shell: echo mysql-server mysql-server/root_password password {{ mysql_root_password }} | sudo debconf-set-selections
   sudo: yes
   run_once: true
+  args:
+    creates: /var/lib/mysql
 
 - name: Mysql | Set root repassword
   shell: echo mysql-server mysql-server/root_password_again password {{ mysql_root_password }} | sudo debconf-set-selections
   sudo: yes
   run_once: true
+  args:
+    creates: /var/lib/mysql
 
 - name: Install basic packages
   apt: pkg=mysql-server state=latest
@@ -21,3 +25,6 @@
   notify:
     - Restart MySQL server
 
+- name: Have UFW allow mysql
+  ufw: rule=allow port=3306 proto=any
+  sudo: yes
