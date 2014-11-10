@@ -24,7 +24,11 @@ LogLevel INFO
 
 # Authentication:
 LoginGraceTime 120
+{% if kvm_host is defined %}
+PermitRootLogin yes
+{% else %}
 PermitRootLogin without-password
+{% endif %}
 StrictModes yes
 
 RSAAuthentication yes
