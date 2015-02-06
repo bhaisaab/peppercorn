@@ -20,7 +20,7 @@ host_user=root
 host_passwd=password
 sec_storage='nfs://192.168.1.11/export/secondary'
 prm_storage='nfs://192.168.1.11/export/primary'
-local_storage=false
+local_storage=true
 
 $cli set profile bluebox
 $cli set username admin
@@ -82,6 +82,7 @@ $cli update configuration name="cluster.memory.allocated.capacity.disablethresho
 $cli update configuration name="pool.storage.allocated.capacity.disablethreshold" value="0.95"
 $cli update configuration name="pool.storage.capacity.disablethreshold" value="0.95"
 $cli update configuration name="kvm.snapshot.enabled" value="true"
+$cli update configuration name="saml.enabled" value="true"
 
 # usage server
 $cli update configuration name="enable.usage.server" value="true"
