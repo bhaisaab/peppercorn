@@ -82,7 +82,7 @@ $cli update configuration name="cluster.memory.allocated.capacity.disablethresho
 $cli update configuration name="pool.storage.allocated.capacity.disablethreshold" value="0.95"
 $cli update configuration name="pool.storage.capacity.disablethreshold" value="0.95"
 $cli update configuration name="kvm.snapshot.enabled" value="true"
-$cli update configuration name="saml.enabled" value="true"
+$cli update configuration name="saml2.enabled" value="true"
 
 # usage server
 $cli update configuration name="enable.usage.server" value="true"
