@@ -7,7 +7,7 @@ set -x
 
 cli=cloudmonkey
 webserver='http://192.168.1.12/'
-set profile bluebox
+$cli set profile bluebox
 
 os_type=$($cli list ostypes description="Other Linux (64-bit)" | grep ^id\ = | awk '{print $3}')
 $cli register template name="KVM Ubuntu 14.04" displaytext="KVM Ubuntu 14.04" zoneid=-1 format=QCOW2 isextractable=false passwordenabled=false isdynamicallyscalable=false ostypeid=$os_type hypervisor=KVM ispublic=true isfeatured=true isrouting=false url="$webserver/kvm-ubuntu-14.04.qcow2"
