@@ -50,11 +50,11 @@ $cli configure virtualrouterelement enabled=true id=$vre_id
 $cli update networkserviceprovider state=Enabled id=$nsp_id
 echo "Enabled virtual router element and network service provider"
 
-#nsp_id=`$cli list networkserviceproviders name=Internallbvm physicalnetworkid=$phy_id | grep ^id\ = | awk '{print $3}'`
-#ilbvm_id=`$cli list internalloadbalancerelements nspid=$nsp_id | grep ^id\ = | awk '{print $3}'`
-#$cli configure virtualrouterelement enabled=true id=$ilbvm_id
-#$cli update networkserviceprovider state=Enabled id=$nsp_id
-#echo "Enabled Internal LBVM and NSP"
+nsp_id=`$cli list networkserviceproviders name=Internallbvm physicalnetworkid=$phy_id | grep ^id\ = | awk '{print $3}'`
+ilbvm_id=`$cli list internalloadbalancerelements nspid=$nsp_id | grep ^id\ = | awk '{print $3}'`
+$cli configure internalloadbalancerelement enabled=true id=$ilbvm_id
+$cli update networkserviceprovider state=Enabled id=$nsp_id
+echo "Enabled Internal LBVM and NSP"
 
 nsp_id=`$cli list networkserviceproviders name=VpcVirtualRouter physicalnetworkid=$phy_id | grep ^id\ = | awk '{print $3}'`
 vpcvr_id=`$cli list virtualrouterelements nspid=$nsp_id | grep ^id\ = | awk '{print $3}'`
