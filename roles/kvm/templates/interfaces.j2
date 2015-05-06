@@ -12,14 +12,14 @@ iface cloudbr0 inet static
     gateway {{ ansible_default_ipv4["gateway"] }}
     dns-nameservers {{ ansible_default_ipv4["gateway"] }} 8.8.8.8
     bridge_ports eth0
-    bridge_fd 5
+    bridge_fd 0
     bridge_stp off
-    bridge_maxwait 1
+    bridge_maxwait 0
 
 # Private network
 auto cloudbr1
 iface cloudbr1 inet manual
     bridge_ports none
-    bridge_fd 5
+    bridge_fd 0
     bridge_stp off
-    bridge_maxwait 1
+    bridge_maxwait 0
